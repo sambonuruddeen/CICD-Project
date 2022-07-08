@@ -38,10 +38,5 @@ jobs:
 workflows:
   default:
     jobs:
-      - build
-      - test:
-          requires:
-            - build
-      - analyze:
-          requires:
-            - test
+      - build-frontend
+      - build-backend
