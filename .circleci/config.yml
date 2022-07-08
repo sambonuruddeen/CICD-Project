@@ -34,3 +34,14 @@ jobs:
       - save_cache:
           paths: [backend/node_modules]
           key: backend-build
+
+workflows:
+  default:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - analyze:
+          requires:
+            - test
