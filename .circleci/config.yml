@@ -7,7 +7,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: FE-node-modules-cache-{{ checksum "package.json" }}
+          keys: FE-build
       - run:
           name: Build front-end
           command: |
@@ -16,7 +16,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [frontend/node_modules]
-          key: FE-node-modules-cache-{{ checksum "package.json" }}
+          key: FE-build
 
   build-backend:
     docker:
@@ -24,7 +24,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: BE-node-modules-cache-{{ checksum "package.json" }}
+          keys: BE-build
       - run:
           name: Back-end build
           command: |
@@ -33,7 +33,7 @@ jobs:
             npm run build
       - save_cache:
           paths: [backend/node_modules]
-          key: BE-node-modules-cache-{{ checksum "package.json" }}
+          key: BE-build
 
   test-frontend:
     docker:
@@ -41,7 +41,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: FE-node-modules-cache-{{ checksum "package.json" }}
+          keys: FE-build
       - run:
           name: Test front-end
           command: |
@@ -55,7 +55,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: BE-node-modules-cache-{{ checksum "package.json" }}
+          keys: BE-build
       - run:
           name: Test backend
           command: |
@@ -69,7 +69,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: FE-node-modules-cache-{{ checksum "package.json" }}
+          keys: FE-build
       - run:
           name: Scan Frontend
           command: |
@@ -84,7 +84,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: BE-node-modules-cache-{{ checksum "package.json" }}
+          keys: BE-build
       - run:
           name: Scan Backend
           command: |
