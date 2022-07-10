@@ -152,7 +152,6 @@ jobs:
   configure-infrastructure:
     docker:
       - image: python:3.7-alpine3.11
-      - image: amazon/aws-cli
     steps:
       - checkout
       - add_ssh_keys:
@@ -175,10 +174,6 @@ jobs:
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
-      - destroy-environment:
-          stack: "udapeople-backend"
-      - destroy-environment:
-          stack: "udapeople-frontend"
 
 workflows:
   default:

@@ -1,4 +1,4 @@
-- name: "configuration play."
+- name: Configuration Server
   hosts: web
   user: ubuntu
   become: true
