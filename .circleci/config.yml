@@ -182,7 +182,11 @@ jobs:
           keys: BE-build
       - run:
           name: Install AWS CLI
-          command: apk add --no-cache aws-cli
+          command: |
+            curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+            unzip awscliv2.zip
+            sudo ./aws/install
+            aws --version
       - run:
           name: Run migrations
           command: |
@@ -194,7 +198,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1' -k
+              curl -k https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
           stack: "udapeople-backend"
