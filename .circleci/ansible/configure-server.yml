@@ -17,7 +17,7 @@
 
     - name: "install python for Ansible."
       become: yes
-        raw: yum -y install python
+      raw: yum -y install python
 
   environment:
     - TYPEORM_CONNECTION: "{{ lookup('env', 'TYPEORM_CONNECTION')}}"
@@ -30,5 +30,4 @@
     - TYPEORM_MIGRATIONS: "{{ lookup('env', 'TYPEORM_MIGRATIONS')}}"
     - TYPEORM_MIGRATIONS_DIR: "{{ lookup('env', 'TYPEORM_MIGRATIONS_DIR')}}"
 
-  roles:
-    configure-server
+  roles: configure-server
