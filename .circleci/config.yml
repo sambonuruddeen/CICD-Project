@@ -2,14 +2,22 @@ version: 2.1
 
 orbs:
   slack: circleci/slack@4.10.1
-  aws-cli: circleci/aws-cli@3.1.1
+
+  # - slack/notify:
+  #     event: fail
+  #     mentions: "@Robert"
+  #     template: basic_fail_1
+  #     channel: "C03FH41JSKH"
+  # - slack/notify:
+  #     event: pass
+  #     template: success_tagged_deploy_1
+  #     channel: "C03FH41JSKH"
 
 commands:
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
       stack:
-        default: "udapeople-backend"
         type: string
     steps:
       - run:
@@ -164,15 +172,27 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt configure-server.yml -vvv
-      # - slack/notify:
-      #     event: fail
-      #     mentions: "@Robert"
-      #     template: basic_fail_1
-      #     channel: "C03FH41JSKH"
-      # - slack/notify:
-      #     event: pass
-      #     template: success_tagged_deploy_1
-      #     channel: "C03FH41JSKH"
+
+  run-migrations:
+    docker:
+      - image: circleci/node:13.8.0
+    steps:
+      - checkout
+      - restore_cache:
+          keys: BE-build
+      - run:
+          name: Run migrations
+          command: |
+            cd backend
+            npm install
+            npm run migrations > migrations_dump.txt
+      - run:
+          name: Send migration results to KVDB
+          command: |
+            if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
+            then
+              curl https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+            fi
       - destroy-environment:
           stack: "udapeople-backend"
       - destroy-environment:
@@ -195,3 +215,5 @@ workflows:
           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
       - configure-infrastructure:
           requires: [deploy-infrastructure]
+      - run-migrations:
+          requires: [configure-infrastructure]
