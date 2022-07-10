@@ -16,6 +16,7 @@ commands:
 
 orbs:
   slack: circleci/slack@4.10.1
+  aws-cli: circleci/aws-cli@3.1.1
 
 jobs:
   build-frontend:
@@ -109,13 +110,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm audit fix --force
             npm audit --audit-level=critical
-      - slack/notify:
-          event: fail
-          mentions: "@Channel"
-          template: basic_fail_1
-      - slack/notify:
-          event: pass
-          template: success_tagged_deploy_1
 
   deploy-infrastructure:
     docker:
@@ -173,6 +167,13 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i ~/project/.circleci/ansible/inventory.txt configure-server.yml
+          - slack/notify:
+              event: fail
+              mentions: "@Channel"
+              template: basic_fail_1
+          - slack/notify:
+              event: pass
+              template: success_tagged_deploy_1
       - destroy-environment:
           stack: "udapeople-backend"
       - destroy-environment:
