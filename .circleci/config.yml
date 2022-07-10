@@ -171,9 +171,11 @@ jobs:
           event: fail
           mentions: "@Robert"
           template: basic_fail_1
+          channel: "C03FH41JSKH"
       - slack/notify:
           event: pass
           template: success_tagged_deploy_1
+          channel: "C03FH41JSKH"
 
 workflows:
   default:
