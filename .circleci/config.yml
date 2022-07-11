@@ -36,8 +36,8 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS = $(curl --insecure  https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_<< parameters.workflow_id >>)
-            if(( $SUCCESS==1 )); 
+            export SUCCESS = $(curl --insecure  https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_<<parameters.workflow_id>>)
+            if(( $SUCCESS==1 ))
             then
               cd ~/project/backend
               npm install
@@ -239,9 +239,12 @@ jobs:
           name: Install NPM
           command: apk add --update nodejs
       - run:
+          name: Install CURL
+          command: apk add curl
+      - run:
           name: Get backend url
           command: |
-            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}") --output text
+            export BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-${CIRCLE_WORKFLOW_ID:0:7}" --output text)
             export API_URL="http://${BACKEND_IP}:3030"
             echo "API_URL = ${API_URL}"
             echo API_URL="http://${BACKEND_IP}:3030" >> frontend/.env
