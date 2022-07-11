@@ -27,10 +27,6 @@
   command:
     cmd: npm install
 
-- name: "Stop all Process Management"
-  command:
-    cmd: pm2 stop all
-
 - name: "Start application"
   command:
     cmd: pm2 start npm -- start
