@@ -365,7 +365,7 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Update cloudfront distribution
+          name: Update Cloudfront Distribution
           command: |
             aws cloudformation \
               list-exports --query "Exports[?Name==\`WorkflowID\`].Value" \
