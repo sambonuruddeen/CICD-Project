@@ -236,7 +236,7 @@ jobs:
           name: Install NPM
           command: apk add --update npm
       - run:
-          name: Install NPM
+          name: Install NodeJS
           command: apk add --update nodejs
       - run:
           name: Install CURL
@@ -264,6 +264,49 @@ jobs:
       - revert-migrations:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
+  deploy-backend:
+    docker:
+      - image: python:3.7-alpine3.16
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: ["a0:a8:48:33:09:5e:f1:97:07:41:23:a7:9d:db:d3:6c"]
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Install tar
+          command: |
+            apk add --upgrade tar
+      - run:
+          name: Install gzip
+          command: |
+            apk add --upgrade gzip
+      - run:
+          name: Install Ansible
+          command: apk add --update ansible
+      - run:
+          name: Install NPM
+          command: apk add --update npm
+      - run:
+          name: Install NodeJS
+          command: apk add --update nodejs
+      - run:
+          name: Deploy backend
+          command: |
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat ~/project/.circleci/ansible/inventory.txt
+            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt deploy-backend.yml
+      - destroy-environment:
+          stack: "udapeople-backend"
+      - destroy-environment:
+          stack: "udapeople-frontend"
+
 workflows:
   default:
     jobs:
@@ -284,4 +327,6 @@ workflows:
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
+          requires: [run-migrations]
+      - deploy-backend:
           requires: [run-migrations]
