@@ -291,6 +291,12 @@ jobs:
           name: Install NodeJS
           command: apk add --update nodejs
       - run:
+          name: Install AWS CLI
+          command: apk add --no-cache aws-cli
+      - run:
+          name: Install CURL
+          command: apk add curl
+      - run:
           name: Deploy backend
           command: |
             cd backend
@@ -306,6 +312,8 @@ jobs:
           stack: "udapeople-backend"
       - destroy-environment:
           stack: "udapeople-frontend"
+      - revert-migrations:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
 workflows:
   default:
