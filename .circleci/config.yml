@@ -365,6 +365,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install dependencies
+          command: yum install tar gzip -y
+      - run:
           name: Update Cloudfront Distribution
           command: |
             aws cloudformation \
@@ -391,6 +394,9 @@ jobs:
   cleanup:
     docker:
       - image: amazon/aws-cli
+      - run:
+          name: Install dependencies
+          command: yum install tar gzip -y
     steps:
       - checkout
       - attach_workspace:
