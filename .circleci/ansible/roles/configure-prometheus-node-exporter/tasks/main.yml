@@ -1,3 +1,8 @@
+- name: "Add node exporter user"
+  become: yes
+  command:
+    cmd: useradd --no-create-home node_exporter
+
 - name: "install node exporter."
   unarchive:
     src: https://github.com/prometheus/node_exporter/releases/download/v0.17.0/node_exporter-0.17.0.linux-amd64.tar.gz
@@ -10,8 +15,8 @@
     src: /tmp/node_exporter-0.17.0.linux-amd64/node_exporter
     dest: /usr/local/bin/node_exporter
     remote_src: yes
-    mode: '0777'
-    
+    mode: "0777"
+
 - name: "add node exporter configuration."
   become: true
   copy:
