@@ -413,6 +413,9 @@ jobs:
             export STACKS=($(aws cloudformation list-stacks --query "StackSummaries[*].StackName" \
               --stack-status-filter CREATE_COMPLETE --no-paginate --output text))
 
+            export OldWorkflowID=$(cat ~/oldWorkflowId.txt)
+
+            echo OldWorkflowID: "${OldWorkflowID}"
             echo Stack names: "${STACKS[@]}" 
 
             if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
