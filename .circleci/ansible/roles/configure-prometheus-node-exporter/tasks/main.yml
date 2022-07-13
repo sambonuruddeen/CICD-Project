@@ -1,3 +1,14 @@
+---
+- name: "update apt packages"
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
 - name: "Add node exporter user"
   become: yes
   command:
