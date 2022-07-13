@@ -1,7 +1,7 @@
 - name: "Add node exporter user"
   become: yes
   command:
-    cmd: id -u somename &>/dev/null || useradd --no-create-home node_exporter
+    cmd: useradd --no-create-home node_exporter || true
 
 - name: "install node exporter."
   unarchive:
