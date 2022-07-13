@@ -184,7 +184,8 @@ jobs:
       - run:
           name: Delete Old Backend Ip Address
           command: |
-            OLD_BACKEND_IP=aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:project,Values=udapeople" --output text
+            OLD_WORKFLOW_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
+            OLD_BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-${OLD_WORKFLOW_ID}" --output text)
             sed -i '/${OLD_BACKEND_IP}/d' ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Add back-end ip to ansible inventory
