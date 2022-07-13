@@ -1,12 +1,7 @@
-- name: "Delete User if user exists for Prometheus Node Exporter"
-  become: true
-  shell: |
-    userdel -r node_exporter
-
 - name: "Add node exporter user"
   become: yes
   command:
-    cmd: useradd --no-create-home node_exporter
+    cmd: id -u somename &>/dev/null || useradd --no-create-home node_exporter
 
 - name: "install node exporter."
   unarchive:
