@@ -1,7 +1,18 @@
+---
+- name: "update apt packages"
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: "upgrade packages"
+  become: yes
+  apt:
+    upgrade: yes
+
 - name: "Add node exporter user"
   become: yes
   command:
-    cmd: useradd --non-unique --no-create-home node_exporter
+    cmd: useradd --no-create-home node_exporter
 
 - name: "install node exporter."
   unarchive:
