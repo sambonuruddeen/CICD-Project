@@ -1,5 +1,4 @@
 - name: "Delete User if user exists for Prometheus Node Exporter"
-  when: inventory_hostname in groups['prometheus-node-exporter']
   become: true
   shell: |
     killall -TERM -u node_exporter
