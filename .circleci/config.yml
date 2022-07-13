@@ -75,6 +75,21 @@ jobs:
       - restore_cache:
           keys: [BE-build]
       - run:
+          name: Save environment variables
+          command: |
+            cat \<< EOF > backend/.env
+            ENVIRONMENT=production
+            TYPEORM_CONNECTION=postgres
+            TYPEORM_MIGRATIONS_DIR=./src/migrations
+            TYPEORM_ENTITIES=./src/modules/domain/**/*.entity.ts
+            TYPEORM_MIGRATIONS=./src/migrations/*.ts
+            TYPEORM_HOST=${TYPEORM_HOST}
+            TYPEORM_PORT=${TYPEORM_PORT}
+            TYPEORM_USERNAME=${TYPEORM_USERNAME}
+            TYPEORM_PASSWORD=${TYPEORM_PASSWORD}
+            TYPEORM_DATABASE=${TYPEORM_DATABASE}
+            EOF
+      - run:
           name: Back-end build
           command: |
             cd backend
@@ -175,6 +190,8 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
   configure-infrastructure:
     docker:
@@ -194,7 +211,9 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
-            ansible-playbook -i ~/project/.circleci/ansible/inventory.txt configure-server.yml -vvv
+            ansible-playbook -i inventory.txt configure-server.yml -vvv
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
   run-migrations:
     docker:
@@ -223,6 +242,10 @@ jobs:
             then
               curl -k https://kvdb.io/qbPDYfCByWMivWqhJT2Fm/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
+      - destroy-environment:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
+      - revert-migrations:
+          workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
 
   deploy-frontend:
     docker:
