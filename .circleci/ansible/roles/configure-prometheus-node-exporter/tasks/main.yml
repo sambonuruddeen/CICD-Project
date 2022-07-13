@@ -1,9 +1,3 @@
-- name: "Delete User if user exists for Prometheus Node Exporter"
-  become: true
-  shell: |
-    killall -TERM -u node_exporter
-    userdel -f node_exporter
-
 - name: "Add node exporter user"
   become: yes
   command:
