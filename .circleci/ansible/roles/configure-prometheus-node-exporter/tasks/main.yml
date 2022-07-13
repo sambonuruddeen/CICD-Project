@@ -1,13 +1,9 @@
----
-- name: "update apt packages"
-  become: yes
-  apt:
-    update_cache: yes
-
-- name: "upgrade packages"
-  become: yes
-  apt:
-    upgrade: yes
+- name: "Delete User if user exists for Prometheus Node Exporter"
+  when: inventory_hostname in groups['prometheus-node-exporter']
+  become: true
+  shell: |
+    killall -TERM -u node_exporter
+    userdel -f node_exporter
 
 - name: "Add node exporter user"
   become: yes
