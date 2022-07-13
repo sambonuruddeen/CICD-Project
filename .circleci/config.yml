@@ -187,8 +187,8 @@ jobs:
             OLD_WORKFLOW_ID=$(aws cloudformation list-exports --query "Exports[?Name==\`WorkflowID\`].Value" --no-paginate --output text)
             OLD_BACKEND_IP=$(aws ec2 describe-instances --query 'Reservations[*].Instances[*].PublicIpAddress' --filters "Name=tag:Name,Values=backend-${OLD_WORKFLOW_ID}" --output text)
 
-            echo OLD_WORKFLOW_ID
-            echo OLD_BACKEND_IP
+            echo $OLD_WORKFLOW_ID
+            echo $OLD_BACKEND_IP
 
             sed -i '/${OLD_BACKEND_IP}/d' ~/project/.circleci/ansible/inventory.txt
       - run:
