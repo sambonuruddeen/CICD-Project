@@ -191,6 +191,8 @@ jobs:
             echo $OLD_BACKEND_IP
 
             sed -i -e '2d' ~/project/.circleci/ansible/inventory.txt
+
+            cat ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Add back-end ip to ansible inventory
           command: |
