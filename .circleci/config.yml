@@ -190,7 +190,7 @@ jobs:
             echo $OLD_WORKFLOW_ID
             echo $OLD_BACKEND_IP
 
-            sed -i /"$OLD_BACKEND_IP/d" ~/project/.circleci/ansible/inventory.txt
+             sed -i '2d' ~/project/.circleci/ansible/inventory.txt
       - run:
           name: Add back-end ip to ansible inventory
           command: |
