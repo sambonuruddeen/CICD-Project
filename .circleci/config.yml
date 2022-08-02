@@ -40,7 +40,7 @@ commands:
           name: Revert migrations
           when: on_fail
           command: |
-            SUCCESS=$(curl -k https://kvdb.io/JtC21xKq1BM1VeavscGjNG/migration_<<parameters.workflow_id>>)
+            SUCCESS=$(curl -k https://kvdb.io/QQFE9D133Soa2Hfh8XVjk4/migration_<<parameters.workflow_id>>)
             echo "$SUCCESS"
             if [[ "${SUCCESS}" == 1 ]];  
             then
@@ -211,7 +211,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["eb:09:5a:90:d6:08:2d:3b:79:b6:1a:7c:79:d0:e3:20"]
+          fingerprints: ["59:a3:d5:d5:96:0e:11:21:e0:95:f5:8e:a1:b9:cf:7e"]
       - attach_workspace:
           at: ~/
       - run:
@@ -229,7 +229,7 @@ jobs:
 
   run-migrations:
     docker:
-      - image: circleci/node:15.0.1
+      - image: circleci/node:13.8.0
     steps:
       - checkout
       - restore_cache:
@@ -252,7 +252,7 @@ jobs:
           command: |
             if grep -q "has been executed successfully." ~/project/backend/migrations_dump.txt
             then
-              curl -k https://kvdb.io/JtC21xKq1BM1VeavscGjNG/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
+              curl -k https://kvdb.io/QQFE9D133Soa2Hfh8XVjk4/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
       - destroy-environment:
           workflow_id: "${CIRCLE_WORKFLOW_ID:0:7}"
@@ -308,7 +308,7 @@ jobs:
     steps:
       - checkout
       - add_ssh_keys:
-          fingerprints: ["eb:09:5a:90:d6:08:2d:3b:79:b6:1a:7c:79:d0:e3:20"]
+          fingerprints: ["59:a3:d5:d5:96:0e:11:21:e0:95:f5:8e:a1:b9:cf:7e"]
       - attach_workspace:
           at: ~/
       - run:
@@ -491,9 +491,9 @@ workflows:
           requires: [run-migrations]
       - deploy-backend:
           requires: [run-migrations]
-#      - smoke-test:
-#          requires: [deploy-backend, deploy-frontend]
-#      - cloudfront-update:
-#          requires: [smoke-test]
-#      - cleanup:
-#          requires: [cloudfront-update]
+      - smoke-test:
+          requires: [deploy-backend, deploy-frontend]
+      - cloudfront-update:
+          requires: [smoke-test]
+      - cleanup:
+          requires: [cloudfront-update]
